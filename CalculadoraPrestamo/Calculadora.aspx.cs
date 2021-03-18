@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.VisualBasic;
+using System.Data;
 
 namespace CalculadoraPrestamo
 {
@@ -71,8 +72,9 @@ namespace CalculadoraPrestamo
 
                     if (Plan.Count != 0)
                     {
-                        lblPrincipal.Text = Convert.ToString(Monto);
+                        lblPrincipal.Text = Convert.ToString(Plan.Sum(m=>m.Principal));
                         lblIntereses.Text = Convert.ToString(Plan.Sum(m => m.Interes));
+                        lblFormalizacion.Text = Convert.ToString(Plan.Sum(m => m.Formalizacion));
                         lblTotal.Text = Convert.ToString(Math.Round(Plan.Sum(m => m.TotalCuota),2));
 
                         grvPlan.DataSource = Plan;                        
@@ -141,6 +143,25 @@ namespace CalculadoraPrestamo
                 return 0;
             }
         }
+
+        private string ConvertSortDirectionToSql(SortDirection sortDirection)
+        {
+            string newSortDirection = String.Empty;
+
+            switch (sortDirection)
+            {
+                case SortDirection.Ascending:
+                    newSortDirection = "ASC";
+                    break;
+
+                case SortDirection.Descending:
+                    newSortDirection = "DESC";
+                    break;
+            }
+
+            return newSortDirection;
+        }
+
 
         static double LOW_RATE = 0.01;
         static double HIGH_RATE = 0.5;
@@ -223,6 +244,32 @@ namespace CalculadoraPrestamo
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "err", "alert('" + Ex.Message + "');", true);
             }
 
+        }
+
+        protected void grvPlan_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            try
+            {
+                GenerarPlan();
+                List<Cuotas> Plan = grvPlan.DataSource as List<Cuotas>;
+
+                List<Cuotas> SortList = new List<Cuotas>();
+                if (e.SortDirection == SortDirection.Ascending)
+                    SortList = Plan.OrderBy(m => m.GetType().GetProperties().First(n => n.Name == e.SortExpression).GetValue(m, null)).ToList();
+                else if (e.SortDirection ==SortDirection.Descending)
+                    SortList = Plan.OrderByDescending(m => m.GetType().GetProperties().First(n => n.Name == e.SortExpression).GetValue(m, null)).ToList();
+
+                if (SortList.Count!=0)
+                {
+                    grvPlan.DataSource = SortList;
+                    grvPlan.DataBind();
+                }
+                
+            }
+            catch(Exception Ex)
+            {
+
+            }
         }
     }
 }

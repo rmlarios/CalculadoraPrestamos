@@ -66,19 +66,21 @@
                         </div>
                         <div class="card-footer">
                             <div class="row text-center"><div class="col-md-12">Plan de Pago</div></div>
-                            <div class="form-group row text-center font-weight-bold">
-                                <div class="col-md-2">Principal</div>
-                                <div class="col-md-2"><asp:Label runat="server" ID="lblPrincipal" CssClass="form-control"></asp:Label></div>
-                                <div class="col-md-2">Intereses</div>
-                                <div class="col-md-2"><asp:Label runat="server" ID="lblIntereses" CssClass="form-control"></asp:Label></div>
-                                <div class="col-md-2">Total a Pagar</div>
-                                <div class="col-md-2"><asp:Label runat="server" ID="lblTotal" CssClass="form-control"></asp:Label></div>
+                            <div class=" table row text-center font-weight-bold">
+                                
+                                <div class="col-md-3">Principal: <asp:Label runat="server" ID="lblPrincipal" CssClass="form-control" Width="100%"></asp:Label></div>
+                                
+                                <div class="col-md-3">Intereses: <asp:Label runat="server" ID="lblIntereses" CssClass="form-control" Width="100%"></asp:Label></div>
+
+                                <div class="col-md-3">Formalización: <asp:Label runat="server" ID="lblFormalizacion" CssClass="form-control" Width="100%"></asp:Label></div>
+                                
+                                <div class="col-md-3">Total a Pagar: <asp:Label runat="server" ID="lblTotal" CssClass="form-control" Width="100%"></asp:Label></div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">
-                                    <asp:GridView runat="server" AllowPaging="true" ID="grvPlan" OnPageIndexChanged="grvPlan_PageIndexChanged" OnPageIndexChanging="grvPlan_PageIndexChanging" PageSize="10" CssClass="table table-hover table-bordered" AutoGenerateColumns="false">
+                                <div class="col-md-12 table-responsive">
+                                    <asp:GridView runat="server" AllowPaging="true" ID="grvPlan" AllowSorting="true" OnSorting="grvPlan_Sorting" OnPageIndexChanged="grvPlan_PageIndexChanged" OnPageIndexChanging="grvPlan_PageIndexChanging" PageSize="10" CssClass="table table-hover table-bordered table-striped" Width="100%" AutoGenerateColumns="false">
                                         <Columns>
-                                            <asp:BoundField DataField="NumeroCuota" HeaderText="No." />
+                                            <asp:BoundField DataField="NumeroCuota" SortExpression="NumeroCuota" HeaderText="No." />
                                             <asp:BoundField DataField="Principal" HeaderText="Principal" DataFormatString="{0:N2}"/>
                                             <asp:BoundField DataField="Interes" DataFormatString="{0:N2}" HeaderText="Interes" />
                                             <asp:BoundField DataField="Formalizacion" DataFormatString="{0:N2}" HeaderText="Formalizacion" />
@@ -86,6 +88,7 @@
                                             <asp:BoundField DataField="Saldo" HeaderText="Saldo" DataFormatString="{0:N2}" />
                                         </Columns>
                                         <HeaderStyle CssClass="bg-info font-weight-bold" />
+
                                         <PagerSettings Visible="true" Position="TopAndBottom" Mode="Numeric" />
                                         
                                     </asp:GridView>
