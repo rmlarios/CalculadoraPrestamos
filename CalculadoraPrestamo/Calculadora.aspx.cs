@@ -44,7 +44,8 @@ namespace CalculadoraPrestamo
                 int Plazos = Convert.ToInt32(txtPlazo.Text.Trim());
                 double taza = Convert.ToDouble(txtInterés.Text.Trim());
                 double Cuota = Math.Round(CalcularCuota(Monto,Plazos,taza), 2);
-                double TIR = Math.Round(CalcularTIR(Monto, Plazos, taza,Cuota), 8); ;
+                double TIR = Math.Round(CalcularTIR(Monto, Plazos, taza,Cuota), 8); 
+                double Formalizacion = CalcularFormalizacion(Monto,Plazos);
 
                 double Principal = 0, Interes = 0, Acumulado = 0, Saldo = Monto;
                 int Cont = 1;
@@ -58,13 +59,13 @@ namespace CalculadoraPrestamo
                         Principal = Cuota - Interes;
                         Acumulado = Acumulado + Principal;
                         Saldo = Math.Round(Saldo,2) - Math.Round(Principal,2);                        
-                        Plan.Add(new Cuotas(Cont, Principal, Interes, Saldo));
+                        Plan.Add(new Cuotas(Cont, Principal, Interes, Saldo,Formalizacion));
                         Cont = Cont + 1;
                     }
                     if (Saldo != 0)
                     {
                         Plan[Plan.Count-1].Principal = Plan[Plan.Count-1].Principal + Saldo;
-                        Plan[Plan.Count-1].Interes = Cuota - (Plan[Plan.Count-1].Principal + Saldo);
+                        Plan[Plan.Count-1].Interes = Math.Round(Cuota,2) - (Math.Round(Plan[Plan.Count-1].Principal,2) + Math.Round(Saldo,2));                        
                         Plan[Plan.Count-1].Saldo = 0;
                     }
 
@@ -72,7 +73,7 @@ namespace CalculadoraPrestamo
                     {
                         lblPrincipal.Text = Convert.ToString(Monto);
                         lblIntereses.Text = Convert.ToString(Plan.Sum(m => m.Interes));
-                        lblTotal.Text = Convert.ToString(Monto + Plan.Sum(m => m.Interes));
+                        lblTotal.Text = Convert.ToString(Math.Round(Plan.Sum(m => m.TotalCuota),2));
 
                         grvPlan.DataSource = Plan;                        
                         grvPlan.DataBind();
@@ -116,6 +117,29 @@ namespace CalculadoraPrestamo
             TIR = computeIRR(flujo, Plazos + 1);
 
             return TIR;
+        }
+
+        public double CalcularFormalizacion(double Monto, int Plazos)
+        {
+            try
+            {
+                double Formalizacion = 0;
+                if (Monto <= 5000)
+                    Formalizacion = 200 / Plazos;
+                else if (Monto > 5000 && Monto <= 10000)
+                    Formalizacion = Monto * 0.001;
+                else if (Monto > 10000 && Monto <= 20000)
+                    Formalizacion = Monto * 0.0005;
+                else if (Monto > 20000 && Monto <= 175000)
+                    Formalizacion = Monto * 0.00007;
+
+                return Math.Round(Formalizacion,2);
+            }
+            catch (Exception Ex)
+            {
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "err", "alert('" + Ex.Message + "');", true);
+                return 0;
+            }
         }
 
         static double LOW_RATE = 0.01;
@@ -177,6 +201,27 @@ namespace CalculadoraPrestamo
 
         protected void grvPlan_PageIndexChanged(object sender, EventArgs e)
         {
+            try
+            {
+                
+            }
+            catch(Exception Ex)
+            {
+
+            }
+        }
+
+        protected void grvPlan_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            try
+            {
+                grvPlan.PageIndex = e.NewPageIndex;
+                GenerarPlan();                
+            }
+            catch(Exception Ex)
+            {
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "err", "alert('" + Ex.Message + "');", true);
+            }
 
         }
     }

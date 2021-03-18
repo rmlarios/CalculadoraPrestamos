@@ -25,7 +25,7 @@
                             <div class="form-group row">
                                 <label for="inputEmail3" class="col-sm-2 col-form-label">Monto Crédito</label>
                                 <div class="col-sm-9">
-                                    <asp:TextBox runat="server" ID="txtMontoCredito" CssClass="form-control"></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="txtMontoCredito" CssClass="form-control" TextMode="Number"></asp:TextBox>
                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1"
                                         ControlToValidate="txtMontoCredito" runat="server"
                                         ErrorMessage="Solo se permite números"
@@ -36,10 +36,12 @@
                             <div class="form-group row">
                                 <label for="inputEmail3" class="col-sm-2 col-form-label">Plazo Meses:</label>
                                 <div class="col-sm-9">
-                                    <asp:TextBox runat="server" ID="txtPlazo" CssClass="form-control"></asp:TextBox>
+                                    <asp:TextBox runat="server" ID="txtPlazo" CssClass="form-control" TextMode="Number">
+                                        
+                                    </asp:TextBox>
                                      <asp:RegularExpressionValidator ID="RegularExpressionValidator2"
                                         ControlToValidate="txtPlazo" runat="server"
-                                        ErrorMessage="Solo se permite números"
+                                        ErrorMessage="Solo se permite números enteros."
                                         ValidationExpression="^\d+">
                                     </asp:RegularExpressionValidator>
                                 </div>
@@ -53,6 +55,7 @@
                                         ErrorMessage="Solo se permite números"
                                         ValidationExpression="^\d+(\,\d+)?$">
                                     </asp:RegularExpressionValidator>
+                                    
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -63,7 +66,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="row text-center"><div class="col-md-12">Plan de Pago</div></div>
-                            <div class="row text-center">
+                            <div class="form-group row text-center font-weight-bold">
                                 <div class="col-md-2">Principal</div>
                                 <div class="col-md-2"><asp:Label runat="server" ID="lblPrincipal" CssClass="form-control"></asp:Label></div>
                                 <div class="col-md-2">Intereses</div>
@@ -73,13 +76,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <asp:GridView runat="server" ID="grvPlan" OnPageIndexChanged="grvPlan_PageIndexChanged" PageSize="10" CssClass="table table-hover table-bordered" AutoGenerateColumns="false">
+                                    <asp:GridView runat="server" AllowPaging="true" ID="grvPlan" OnPageIndexChanged="grvPlan_PageIndexChanged" OnPageIndexChanging="grvPlan_PageIndexChanging" PageSize="10" CssClass="table table-hover table-bordered" AutoGenerateColumns="false">
                                         <Columns>
                                             <asp:BoundField DataField="NumeroCuota" HeaderText="No." />
-                                            <asp:BoundField DataField="Principal" HeaderText="Principal" />
-                                            <asp:BoundField DataField="Interes" HeaderText="Interes" />
-                                            <asp:BoundField DataField="TotalCuota" HeaderText="Cuota Total" />
-                                            <asp:BoundField DataField="Saldo" HeaderText="Saldo" />
+                                            <asp:BoundField DataField="Principal" HeaderText="Principal" DataFormatString="{0:N2}"/>
+                                            <asp:BoundField DataField="Interes" DataFormatString="{0:N2}" HeaderText="Interes" />
+                                            <asp:BoundField DataField="Formalizacion" DataFormatString="{0:N2}" HeaderText="Formalizacion" />
+                                            <asp:BoundField DataField="TotalCuota" HeaderText="Cuota Total" DataFormatString="{0:N2}" />
+                                            <asp:BoundField DataField="Saldo" HeaderText="Saldo" DataFormatString="{0:N2}" />
                                         </Columns>
                                         <HeaderStyle CssClass="bg-info font-weight-bold" />
                                         <PagerSettings Visible="true" Position="TopAndBottom" Mode="Numeric" />
